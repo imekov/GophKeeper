@@ -1,0 +1,38 @@
+syntax = "proto3";
+package gophkeeper;
+
+option go_package = "GophKeeper/proto";
+
+message AuthRequest {
+  string login = 1;
+  string password = 2;
+}
+
+message AuthResponse {
+  string token = 1;
+}
+
+message SendDataRequest {
+  string token = 1;
+  bytes data = 2;
+}
+
+message SendDataResponse {
+  string id = 1;
+}
+
+message UpdateDataRequest {
+  string token = 1;
+  repeated string data_id = 2;
+}
+
+message UpdateDataResponse {
+  bytes data = 1;
+}
+
+service UrlShortener {
+  rpc Register(AuthRequest) returns (AuthResponse);
+  rpc Login(AuthRequest) returns (AuthResponse);
+  rpc SendData(SendDataRequest) returns (SendDataResponse);
+  rpc UpdateData(UpdateDataRequest) returns (UpdateDataResponse);
+}
