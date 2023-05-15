@@ -1,8 +1,11 @@
 package interfaces
 
-import "context"
+import (
+	"context"
+	pb "gophkeeper/proto"
+)
 
 type Service interface {
-	InsertDataIntoDataTable(data []byte, userID int, dataType string, checksum string, ctx context.Context) (error error)
-	GetUpdates(userID int, userDataID []string, ctx context.Context) (data []byte)
+	InsertDataIntoDataTable(ctx context.Context, userID int, userData *pb.SendDataRequestArray) (dataID int, error error)
+	GetUpdatesByChecksums(ctx context.Context, userID int, checkSums []string) ([]*pb.GetDataResponseArray, error)
 }

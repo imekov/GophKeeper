@@ -1,0 +1,3 @@
+DROP TABLE IF EXISTS user_data;
+DROP TABLE IF EXISTS data_types;
+DROP TABLE IF EXISTS users;

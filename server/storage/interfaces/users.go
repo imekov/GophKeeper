@@ -3,8 +3,8 @@ package interfaces
 import "context"
 
 type Users interface {
-	CreateUser(login string, password string, ctx context.Context) (userID int, err error)
-	LoginUser(login string, password string, ctx context.Context) (userID int, error error)
-	IsUserExistByUserID(userID int, ctx context.Context) (response bool)
-	IsUserExistByLogin(login string, ctx context.Context) (response bool)
+	CreateUser(ctx context.Context, login string, password string) (userID int, err error)
+	LoginUser(ctx context.Context, login string, password string) (userID int, error error)
+	IsUserExistByUserID(ctx context.Context, userID int) (response bool)
+	IsUserExistByLogin(ctx context.Context, login string) (response bool)
 }

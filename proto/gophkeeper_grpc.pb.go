@@ -19,200 +19,237 @@ import (
 const _ = grpc.SupportPackageIsVersion7
 
 const (
-	UrlShortener_Register_FullMethodName   = "/gophkeeper.UrlShortener/Register"
-	UrlShortener_Login_FullMethodName      = "/gophkeeper.UrlShortener/Login"
-	UrlShortener_SendData_FullMethodName   = "/gophkeeper.UrlShortener/SendData"
-	UrlShortener_UpdateData_FullMethodName = "/gophkeeper.UrlShortener/UpdateData"
+	GophKeeper_Register_FullMethodName          = "/gophkeeper.GophKeeper/Register"
+	GophKeeper_Login_FullMethodName             = "/gophkeeper.GophKeeper/Login"
+	GophKeeper_SendDataToServer_FullMethodName  = "/gophkeeper.GophKeeper/SendDataToServer"
+	GophKeeper_GetDataFromServer_FullMethodName = "/gophkeeper.GophKeeper/GetDataFromServer"
+	GophKeeper_UpdateData_FullMethodName        = "/gophkeeper.GophKeeper/UpdateData"
 )
 
-// UrlShortenerClient is the client API for UrlShortener service.
+// GophKeeperClient is the client API for GophKeeper service.
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
-type UrlShortenerClient interface {
+type GophKeeperClient interface {
 	Register(ctx context.Context, in *AuthRequest, opts ...grpc.CallOption) (*AuthResponse, error)
 	Login(ctx context.Context, in *AuthRequest, opts ...grpc.CallOption) (*AuthResponse, error)
-	SendData(ctx context.Context, in *SendDataRequest, opts ...grpc.CallOption) (*SendDataResponse, error)
+	SendDataToServer(ctx context.Context, in *SendDataRequest, opts ...grpc.CallOption) (*SendDataResponse, error)
+	GetDataFromServer(ctx context.Context, in *GetDataRequest, opts ...grpc.CallOption) (*GetDataResponse, error)
 	UpdateData(ctx context.Context, in *UpdateDataRequest, opts ...grpc.CallOption) (*UpdateDataResponse, error)
 }
 
-type urlShortenerClient struct {
+type gophKeeperClient struct {
 	cc grpc.ClientConnInterface
 }
 
-func NewUrlShortenerClient(cc grpc.ClientConnInterface) UrlShortenerClient {
-	return &urlShortenerClient{cc}
+func NewGophKeeperClient(cc grpc.ClientConnInterface) GophKeeperClient {
+	return &gophKeeperClient{cc}
 }
 
-func (c *urlShortenerClient) Register(ctx context.Context, in *AuthRequest, opts ...grpc.CallOption) (*AuthResponse, error) {
+func (c *gophKeeperClient) Register(ctx context.Context, in *AuthRequest, opts ...grpc.CallOption) (*AuthResponse, error) {
 	out := new(AuthResponse)
-	err := c.cc.Invoke(ctx, UrlShortener_Register_FullMethodName, in, out, opts...)
+	err := c.cc.Invoke(ctx, GophKeeper_Register_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *urlShortenerClient) Login(ctx context.Context, in *AuthRequest, opts ...grpc.CallOption) (*AuthResponse, error) {
+func (c *gophKeeperClient) Login(ctx context.Context, in *AuthRequest, opts ...grpc.CallOption) (*AuthResponse, error) {
 	out := new(AuthResponse)
-	err := c.cc.Invoke(ctx, UrlShortener_Login_FullMethodName, in, out, opts...)
+	err := c.cc.Invoke(ctx, GophKeeper_Login_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *urlShortenerClient) SendData(ctx context.Context, in *SendDataRequest, opts ...grpc.CallOption) (*SendDataResponse, error) {
+func (c *gophKeeperClient) SendDataToServer(ctx context.Context, in *SendDataRequest, opts ...grpc.CallOption) (*SendDataResponse, error) {
 	out := new(SendDataResponse)
-	err := c.cc.Invoke(ctx, UrlShortener_SendData_FullMethodName, in, out, opts...)
+	err := c.cc.Invoke(ctx, GophKeeper_SendDataToServer_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *urlShortenerClient) UpdateData(ctx context.Context, in *UpdateDataRequest, opts ...grpc.CallOption) (*UpdateDataResponse, error) {
+func (c *gophKeeperClient) GetDataFromServer(ctx context.Context, in *GetDataRequest, opts ...grpc.CallOption) (*GetDataResponse, error) {
+	out := new(GetDataResponse)
+	err := c.cc.Invoke(ctx, GophKeeper_GetDataFromServer_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *gophKeeperClient) UpdateData(ctx context.Context, in *UpdateDataRequest, opts ...grpc.CallOption) (*UpdateDataResponse, error) {
 	out := new(UpdateDataResponse)
-	err := c.cc.Invoke(ctx, UrlShortener_UpdateData_FullMethodName, in, out, opts...)
+	err := c.cc.Invoke(ctx, GophKeeper_UpdateData_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-// UrlShortenerServer is the server API for UrlShortener service.
-// All implementations must embed UnimplementedUrlShortenerServer
+// GophKeeperServer is the server API for GophKeeper service.
+// All implementations must embed UnimplementedGophKeeperServer
 // for forward compatibility
-type UrlShortenerServer interface {
+type GophKeeperServer interface {
 	Register(context.Context, *AuthRequest) (*AuthResponse, error)
 	Login(context.Context, *AuthRequest) (*AuthResponse, error)
-	SendData(context.Context, *SendDataRequest) (*SendDataResponse, error)
+	SendDataToServer(context.Context, *SendDataRequest) (*SendDataResponse, error)
+	GetDataFromServer(context.Context, *GetDataRequest) (*GetDataResponse, error)
 	UpdateData(context.Context, *UpdateDataRequest) (*UpdateDataResponse, error)
-	mustEmbedUnimplementedUrlShortenerServer()
+	mustEmbedUnimplementedGophKeeperServer()
 }
 
-// UnimplementedUrlShortenerServer must be embedded to have forward compatible implementations.
-type UnimplementedUrlShortenerServer struct {
+// UnimplementedGophKeeperServer must be embedded to have forward compatible implementations.
+type UnimplementedGophKeeperServer struct {
 }
 
-func (UnimplementedUrlShortenerServer) Register(context.Context, *AuthRequest) (*AuthResponse, error) {
+func (UnimplementedGophKeeperServer) Register(context.Context, *AuthRequest) (*AuthResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Register not implemented")
 }
-func (UnimplementedUrlShortenerServer) Login(context.Context, *AuthRequest) (*AuthResponse, error) {
+func (UnimplementedGophKeeperServer) Login(context.Context, *AuthRequest) (*AuthResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Login not implemented")
 }
-func (UnimplementedUrlShortenerServer) SendData(context.Context, *SendDataRequest) (*SendDataResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method SendData not implemented")
+func (UnimplementedGophKeeperServer) SendDataToServer(context.Context, *SendDataRequest) (*SendDataResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method SendDataToServer not implemented")
 }
-func (UnimplementedUrlShortenerServer) UpdateData(context.Context, *UpdateDataRequest) (*UpdateDataResponse, error) {
+func (UnimplementedGophKeeperServer) GetDataFromServer(context.Context, *GetDataRequest) (*GetDataResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetDataFromServer not implemented")
+}
+func (UnimplementedGophKeeperServer) UpdateData(context.Context, *UpdateDataRequest) (*UpdateDataResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UpdateData not implemented")
 }
-func (UnimplementedUrlShortenerServer) mustEmbedUnimplementedUrlShortenerServer() {}
+func (UnimplementedGophKeeperServer) mustEmbedUnimplementedGophKeeperServer() {}
 
-// UnsafeUrlShortenerServer may be embedded to opt out of forward compatibility for this service.
-// Use of this interface is not recommended, as added methods to UrlShortenerServer will
+// UnsafeGophKeeperServer may be embedded to opt out of forward compatibility for this service.
+// Use of this interface is not recommended, as added methods to GophKeeperServer will
 // result in compilation errors.
-type UnsafeUrlShortenerServer interface {
-	mustEmbedUnimplementedUrlShortenerServer()
+type UnsafeGophKeeperServer interface {
+	mustEmbedUnimplementedGophKeeperServer()
 }
 
-func RegisterUrlShortenerServer(s grpc.ServiceRegistrar, srv UrlShortenerServer) {
-	s.RegisterService(&UrlShortener_ServiceDesc, srv)
+func RegisterGophKeeperServer(s grpc.ServiceRegistrar, srv GophKeeperServer) {
+	s.RegisterService(&GophKeeper_ServiceDesc, srv)
 }
 
-func _UrlShortener_Register_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _GophKeeper_Register_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(AuthRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(UrlShortenerServer).Register(ctx, in)
+		return srv.(GophKeeperServer).Register(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: UrlShortener_Register_FullMethodName,
+		FullMethod: GophKeeper_Register_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(UrlShortenerServer).Register(ctx, req.(*AuthRequest))
+		return srv.(GophKeeperServer).Register(ctx, req.(*AuthRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _UrlShortener_Login_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _GophKeeper_Login_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(AuthRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(UrlShortenerServer).Login(ctx, in)
+		return srv.(GophKeeperServer).Login(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: UrlShortener_Login_FullMethodName,
+		FullMethod: GophKeeper_Login_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(UrlShortenerServer).Login(ctx, req.(*AuthRequest))
+		return srv.(GophKeeperServer).Login(ctx, req.(*AuthRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _UrlShortener_SendData_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _GophKeeper_SendDataToServer_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(SendDataRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(UrlShortenerServer).SendData(ctx, in)
+		return srv.(GophKeeperServer).SendDataToServer(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: UrlShortener_SendData_FullMethodName,
+		FullMethod: GophKeeper_SendDataToServer_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(UrlShortenerServer).SendData(ctx, req.(*SendDataRequest))
+		return srv.(GophKeeperServer).SendDataToServer(ctx, req.(*SendDataRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _UrlShortener_UpdateData_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _GophKeeper_GetDataFromServer_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetDataRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(GophKeeperServer).GetDataFromServer(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: GophKeeper_GetDataFromServer_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(GophKeeperServer).GetDataFromServer(ctx, req.(*GetDataRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _GophKeeper_UpdateData_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(UpdateDataRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(UrlShortenerServer).UpdateData(ctx, in)
+		return srv.(GophKeeperServer).UpdateData(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: UrlShortener_UpdateData_FullMethodName,
+		FullMethod: GophKeeper_UpdateData_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(UrlShortenerServer).UpdateData(ctx, req.(*UpdateDataRequest))
+		return srv.(GophKeeperServer).UpdateData(ctx, req.(*UpdateDataRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-// UrlShortener_ServiceDesc is the grpc.ServiceDesc for UrlShortener service.
+// GophKeeper_ServiceDesc is the grpc.ServiceDesc for GophKeeper service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
-var UrlShortener_ServiceDesc = grpc.ServiceDesc{
-	ServiceName: "gophkeeper.UrlShortener",
-	HandlerType: (*UrlShortenerServer)(nil),
+var GophKeeper_ServiceDesc = grpc.ServiceDesc{
+	ServiceName: "gophkeeper.GophKeeper",
+	HandlerType: (*GophKeeperServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
 			MethodName: "Register",
-			Handler:    _UrlShortener_Register_Handler,
+			Handler:    _GophKeeper_Register_Handler,
 		},
 		{
 			MethodName: "Login",
-			Handler:    _UrlShortener_Login_Handler,
+			Handler:    _GophKeeper_Login_Handler,
 		},
 		{
-			MethodName: "SendData",
-			Handler:    _UrlShortener_SendData_Handler,
+			MethodName: "SendDataToServer",
+			Handler:    _GophKeeper_SendDataToServer_Handler,
+		},
+		{
+			MethodName: "GetDataFromServer",
+			Handler:    _GophKeeper_GetDataFromServer_Handler,
 		},
 		{
 			MethodName: "UpdateData",
-			Handler:    _UrlShortener_UpdateData_Handler,
+			Handler:    _GophKeeper_UpdateData_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
