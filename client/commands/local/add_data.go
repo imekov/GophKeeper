@@ -1,7 +1,8 @@
-package commands
+package local
 
 import (
 	"github.com/spf13/cobra"
+
 	"gophkeeper/client/storage/model"
 )
 
@@ -14,7 +15,7 @@ var (
 	UserBankCard   model.BankCard
 )
 
-// AddDataCmd добавляет данные.
+// AddDataCmd добавляет пользовательские данные.
 var AddDataCmd = &cobra.Command{
 	Use:   "add",
 	Short: "Add добавляет пользовательские данные",

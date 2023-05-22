@@ -1,7 +1,9 @@
-package commands
+package server
 
 import (
 	"github.com/spf13/cobra"
+
+	"gophkeeper/client/commands"
 )
 
 // RegisterCmd реализуют регистрацию в сервисе
@@ -13,6 +15,6 @@ var RegisterCmd = &cobra.Command{
 }
 
 func init() {
-	RegisterCmd.Flags().StringVarP(&Login, "login", "l", "", "user login")
-	RegisterCmd.Flags().StringVarP(&Password, "password", "p", "", "user password")
+	RegisterCmd.Flags().StringVarP(&commands.Login, "login", "l", "", "user login")
+	RegisterCmd.Flags().StringVarP(&commands.Password, "password", "p", "", "user password")
 }

@@ -3,8 +3,9 @@ package auth
 import (
 	"crypto/rand"
 	"fmt"
-	"log"
 	"time"
+
+	"github.com/rs/zerolog"
 
 	"github.com/golang-jwt/jwt/v5"
 )
@@ -13,12 +14,14 @@ type JWT struct {
 	key []byte
 }
 
-func NewJWT() JWT {
+// NewJWT создает новый секретный ключ для работы JWT.
+func NewJWT(logger *zerolog.Logger) JWT {
 
 	secret := make([]byte, 256)
 	_, err := rand.Read(secret)
 	if err != nil {
-		log.Fatal(err)
+		newPrint := fmt.Sprintf("unable to create new JWT secret : %s", err.Error())
+		logger.Error().Msg(newPrint)
 	}
 
 	return JWT{
@@ -26,6 +29,7 @@ func NewJWT() JWT {
 	}
 }
 
+// Create записывает пользовательский идентификатор в токен и возвращает его.
 func (j JWT) Create(ttl time.Duration, userID int) (string, error) {
 	now := time.Now().UTC()
 
@@ -43,6 +47,7 @@ func (j JWT) Create(ttl time.Duration, userID int) (string, error) {
 	return token, nil
 }
 
+// Validate проверяет корректность токена.
 func (j JWT) Validate(token string) (int, error) {
 	t, err := jwt.Parse(token, func(jwtToken *jwt.Token) (interface{}, error) {
 		if _, ok := jwtToken.Method.(*jwt.SigningMethodHMAC); !ok {

@@ -1,10 +1,12 @@
-package commands
+package server
 
 import (
 	"github.com/spf13/cobra"
+
+	"gophkeeper/client/commands"
 )
 
-// LoginCmd represents the login command
+// LoginCmd производит авторизацию
 var LoginCmd = &cobra.Command{
 	Use:   "login",
 	Short: "Авторизация в сервисе GophKeeper",
@@ -13,6 +15,6 @@ var LoginCmd = &cobra.Command{
 }
 
 func init() {
-	LoginCmd.Flags().StringVarP(&Login, "login", "l", "", "user login")
-	LoginCmd.Flags().StringVarP(&Password, "password", "p", "", "user password")
+	LoginCmd.Flags().StringVarP(&commands.Login, "login", "l", "", "user login")
+	LoginCmd.Flags().StringVarP(&commands.Password, "password", "p", "", "user password")
 }

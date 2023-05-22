@@ -1,22 +1,28 @@
 package client
 
 import (
-	"github.com/spf13/cobra"
-	"google.golang.org/grpc"
-	"google.golang.org/grpc/credentials/insecure"
+	"log"
+
 	"gophkeeper/client/commands"
+	"gophkeeper/client/commands/local"
+	"gophkeeper/client/commands/server"
 	"gophkeeper/client/handlers"
 	"gophkeeper/client/storage/filesystem"
 	pb "gophkeeper/proto"
-	"log"
+
+	"github.com/spf13/cobra"
+	"google.golang.org/grpc"
+	"google.golang.org/grpc/credentials/insecure"
 )
 
+// Client содержит ссылку на рут команду, хэндлеры и grpc клиент.
 type Client struct {
 	RootCmd     *cobra.Command
 	handlers    handlers.Handlers
 	GRPCConnect *grpc.ClientConn
 }
 
+// NewClient создает новый экземпляр клиента.
 func NewClient(serverAddress string, filename string) *Client {
 
 	conn, err := grpc.Dial(serverAddress, grpc.WithTransportCredentials(insecure.NewCredentials()))
@@ -38,41 +44,39 @@ func NewClient(serverAddress string, filename string) *Client {
 		GRPCConnect: conn,
 	}
 
-	commands.RegisterCmd.Run = newClient.handlers.Register(&commands.Login, &commands.Password)
-	newClient.RootCmd.AddCommand(commands.RegisterCmd)
+	local.GetListCmd.Run = newClient.handlers.GetUserDataList()
+	newClient.RootCmd.AddCommand(local.GetListCmd)
 
-	commands.LoginCmd.Run = newClient.handlers.Login(&commands.Login, &commands.Password)
-	newClient.RootCmd.AddCommand(commands.LoginCmd)
+	local.GetDataCmd.Run = newClient.handlers.GetUserData(&local.DataIndex)
+	newClient.RootCmd.AddCommand(local.GetDataCmd)
 
-	commands.GetListCmd.Run = newClient.handlers.GetUserDataList()
-	newClient.RootCmd.AddCommand(commands.GetListCmd)
+	local.CredentialCmd.Run = newClient.handlers.AddData(&local.DataTitle, &local.Metadata, &local.UserCredential)
+	local.TextCmd.Run = newClient.handlers.AddData(&local.DataTitle, &local.Metadata, &local.UserText)
+	local.BankCardCmd.Run = newClient.handlers.AddData(&local.DataTitle, &local.Metadata, &local.UserBankCard)
+	local.BinaryCmd.PreRun = newClient.handlers.MakeBinary(&local.UserBinaryData)
+	local.BinaryCmd.Run = newClient.handlers.AddData(&local.DataTitle, &local.Metadata, &local.UserBinaryData)
+	newClient.RootCmd.AddCommand(local.AddDataCmd)
 
-	commands.GetDataCmd.Run = newClient.handlers.GetUserData(&commands.DataIndex)
-	newClient.RootCmd.AddCommand(commands.GetDataCmd)
+	local.EditCredentialCmd.Run = newClient.handlers.EditData(&local.EditedLocalID, &local.EditedDataTitle, &local.EditedMetadata, &local.EditedUserCredential)
+	local.EditTextCmd.Run = newClient.handlers.EditData(&local.EditedLocalID, &local.EditedDataTitle, &local.EditedMetadata, &local.EditedUserText)
+	local.EditBankCardCmd.Run = newClient.handlers.EditData(&local.EditedLocalID, &local.EditedDataTitle, &local.EditedMetadata, &local.EditedUserBankCard)
+	local.EditBinaryCmd.PreRun = newClient.handlers.MakeBinary(&local.EditedUserBinaryData)
+	local.EditBinaryCmd.Run = newClient.handlers.EditData(&local.EditedLocalID, &local.EditedDataTitle, &local.EditedMetadata, &local.EditedUserBinaryData)
+	newClient.RootCmd.AddCommand(local.EditDataCmd)
 
-	commands.CredentialCmd.Run = newClient.handlers.AddData(&commands.DataTitle, &commands.Metadata, &commands.UserCredential)
-	commands.TextCmd.Run = newClient.handlers.AddData(&commands.DataTitle, &commands.Metadata, &commands.UserText)
-	commands.BankCardCmd.Run = newClient.handlers.AddData(&commands.DataTitle, &commands.Metadata, &commands.UserBankCard)
-	commands.BinaryCmd.PreRun = newClient.handlers.MakeBinary(&commands.UserBinaryData)
-	commands.BinaryCmd.Run = newClient.handlers.AddData(&commands.DataTitle, &commands.Metadata, &commands.UserBinaryData)
-	newClient.RootCmd.AddCommand(commands.AddDataCmd)
+	server.RegisterCmd.Run = newClient.handlers.Register(&commands.Login, &commands.Password)
+	newClient.RootCmd.AddCommand(server.RegisterCmd)
 
-	commands.EditCredentialCmd.Run = newClient.handlers.EditData(&commands.EditedLocalID, &commands.EditedDataTitle, &commands.EditedMetadata, &commands.EditedUserCredential)
-	commands.EditTextCmd.Run = newClient.handlers.EditData(&commands.EditedLocalID, &commands.EditedDataTitle, &commands.EditedMetadata, &commands.EditedUserText)
-	commands.EditBankCardCmd.Run = newClient.handlers.EditData(&commands.EditedLocalID, &commands.EditedDataTitle, &commands.EditedMetadata, &commands.EditedUserBankCard)
-	commands.EditBinaryCmd.PreRun = newClient.handlers.MakeBinary(&commands.EditedUserBinaryData)
-	commands.EditBinaryCmd.Run = newClient.handlers.EditData(&commands.EditedLocalID, &commands.EditedDataTitle, &commands.EditedMetadata, &commands.EditedUserBinaryData)
-	newClient.RootCmd.AddCommand(commands.EditDataCmd)
+	server.LoginCmd.Run = newClient.handlers.Login(&commands.Login, &commands.Password)
+	newClient.RootCmd.AddCommand(server.LoginCmd)
 
-	commands.SendToServerCmd.Run = newClient.handlers.SendData(&commands.Masterkey)
-	newClient.RootCmd.AddCommand(commands.SendToServerCmd)
-
-	commands.GetFromServerCmd.Run = newClient.handlers.DownloadData(&commands.Masterkey)
-	newClient.RootCmd.AddCommand(commands.GetFromServerCmd)
+	server.SynchronizationCmd.Run = newClient.handlers.Sync(&commands.Masterkey)
+	newClient.RootCmd.AddCommand(server.SynchronizationCmd)
 
 	return &newClient
 }
 
+// CloseConnection закрывает клиентское соединение с GRPC сервером.
 func (c Client) CloseConnection() {
 	c.GRPCConnect.Close()
 }

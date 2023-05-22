@@ -3,11 +3,13 @@ package handlers
 import (
 	"context"
 	"fmt"
+
 	pb "gophkeeper/proto"
 
 	"github.com/spf13/cobra"
 )
 
+// Register используется для регистрации нового пользователя.
 func (h Handlers) Register(login *string, password *string) func(cmd *cobra.Command, args []string) {
 	return func(cmd *cobra.Command, args []string) {
 		newUser := pb.AuthRequest{Login: *login, Password: *password}
@@ -22,6 +24,7 @@ func (h Handlers) Register(login *string, password *string) func(cmd *cobra.Comm
 	}
 }
 
+// Login используется для авторизации пользователей.
 func (h Handlers) Login(login *string, password *string) func(cmd *cobra.Command, args []string) {
 	return func(cmd *cobra.Command, args []string) {
 		userCredentials := pb.AuthRequest{Login: *login, Password: *password}

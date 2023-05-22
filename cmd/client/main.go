@@ -2,13 +2,16 @@ package main
 
 import (
 	"fmt"
-	"gophkeeper/client"
 	"os"
+
+	"gophkeeper/client"
+	"gophkeeper/client/config"
 )
 
 func main() {
-	//TODO: брать данные из конфига
-	newClient := client.NewClient(":8080", "client/userdata/data.gob")
+	cfg := config.GetConfig()
+
+	newClient := client.NewClient(cfg.ServerAddress, cfg.Filename)
 	defer newClient.CloseConnection()
 
 	if err := newClient.RootCmd.Execute(); err != nil {

@@ -1,8 +1,9 @@
 package storage
 
 import (
-	"gophkeeper/client/storage/model"
 	"os"
+
+	"gophkeeper/client/storage/model"
 )
 
 type Repo interface {
@@ -11,9 +12,9 @@ type Repo interface {
 	GetUserDataByLocalID(localID string) (resp model.UserData)
 	AddData(newData []model.UserData)
 	UpdateDataByServerID(updateData []model.UserData)
-	UpdateDataByLocalID(updateData model.UserData)
+	UpdateDataByLocalID(updateData model.UserData) error
 	UpdateDataIDChecksumFromServer(localID string, ID string, checksum string)
-	GetNewLocalID() string
+	GetNewLocalID() int
 
 	IsUserAuthorized() bool
 	UpdateToken(newToken string)

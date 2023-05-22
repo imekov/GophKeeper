@@ -56,13 +56,28 @@ message GetDataResponse {
   repeated GetDataResponseArray data = 1;
 }
 
+message UpdateDataRequestArray{
+  string checksum = 1;
+  string title = 2;
+  string metadata = 3;
+  bytes data = 4;
+  string localID = 5;
+  string serverID = 6;
+}
+
 message UpdateDataRequest {
   string token = 1;
-  repeated string data_id = 2;
+  repeated UpdateDataRequestArray data = 2;
+}
+
+message UpdateDataResponseArray {
+  string localID = 1;
+  string checkSum = 2;
+  bool ok = 3;
 }
 
 message UpdateDataResponse {
-  bytes data = 1;
+  repeated UpdateDataResponseArray resp = 1;
 }
 
 service GophKeeper {
@@ -70,5 +85,5 @@ service GophKeeper {
   rpc Login(AuthRequest) returns (AuthResponse);
   rpc SendDataToServer(SendDataRequest) returns (SendDataResponse);
   rpc GetDataFromServer(GetDataRequest) returns (GetDataResponse);
-  rpc UpdateData(UpdateDataRequest) returns (UpdateDataResponse);
+  rpc UpdateDataToServer(UpdateDataRequest) returns (UpdateDataResponse);
 }

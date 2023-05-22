@@ -11,6 +11,7 @@ import (
 	"io"
 )
 
+// Encode производит шифрование данных.
 func Encode(data any, masterkey string) (resp []byte, err error) {
 
 	key, err := getHexKey(masterkey)
@@ -47,6 +48,7 @@ func Encode(data any, masterkey string) (resp []byte, err error) {
 	return ciphertext, nil
 }
 
+// Decrypt расшифровывает двоичные данные, на выходе получаем исходные двоичные данные.
 func Decrypt(encryptData []byte, masterKey string) (resp []byte, err error) {
 	key, err := getHexKey(masterKey)
 	if err != nil {
@@ -75,6 +77,7 @@ func Decrypt(encryptData []byte, masterKey string) (resp []byte, err error) {
 
 }
 
+// Decode дешифрует данные и преобразовывает результат в исходную структуру.
 func Decode[T any](encryptData []byte, masterKey string) (resp any, err error) {
 	var t T
 	dec, err := Decrypt(encryptData, masterKey)
@@ -88,6 +91,7 @@ func Decode[T any](encryptData []byte, masterKey string) (resp any, err error) {
 	return t, nil
 }
 
+// getHexKey преобразует пользовательский ключ шифрования в hex.
 func getHexKey(key string) ([]byte, error) {
 	h := sha256.New()
 	h.Write([]byte(key))

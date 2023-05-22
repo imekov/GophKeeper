@@ -19,11 +19,11 @@ import (
 const _ = grpc.SupportPackageIsVersion7
 
 const (
-	GophKeeper_Register_FullMethodName          = "/gophkeeper.GophKeeper/Register"
-	GophKeeper_Login_FullMethodName             = "/gophkeeper.GophKeeper/Login"
-	GophKeeper_SendDataToServer_FullMethodName  = "/gophkeeper.GophKeeper/SendDataToServer"
-	GophKeeper_GetDataFromServer_FullMethodName = "/gophkeeper.GophKeeper/GetDataFromServer"
-	GophKeeper_UpdateData_FullMethodName        = "/gophkeeper.GophKeeper/UpdateData"
+	GophKeeper_Register_FullMethodName           = "/gophkeeper.GophKeeper/Register"
+	GophKeeper_Login_FullMethodName              = "/gophkeeper.GophKeeper/Login"
+	GophKeeper_SendDataToServer_FullMethodName   = "/gophkeeper.GophKeeper/SendDataToServer"
+	GophKeeper_GetDataFromServer_FullMethodName  = "/gophkeeper.GophKeeper/GetDataFromServer"
+	GophKeeper_UpdateDataToServer_FullMethodName = "/gophkeeper.GophKeeper/UpdateDataToServer"
 )
 
 // GophKeeperClient is the client API for GophKeeper service.
@@ -34,7 +34,7 @@ type GophKeeperClient interface {
 	Login(ctx context.Context, in *AuthRequest, opts ...grpc.CallOption) (*AuthResponse, error)
 	SendDataToServer(ctx context.Context, in *SendDataRequest, opts ...grpc.CallOption) (*SendDataResponse, error)
 	GetDataFromServer(ctx context.Context, in *GetDataRequest, opts ...grpc.CallOption) (*GetDataResponse, error)
-	UpdateData(ctx context.Context, in *UpdateDataRequest, opts ...grpc.CallOption) (*UpdateDataResponse, error)
+	UpdateDataToServer(ctx context.Context, in *UpdateDataRequest, opts ...grpc.CallOption) (*UpdateDataResponse, error)
 }
 
 type gophKeeperClient struct {
@@ -81,9 +81,9 @@ func (c *gophKeeperClient) GetDataFromServer(ctx context.Context, in *GetDataReq
 	return out, nil
 }
 
-func (c *gophKeeperClient) UpdateData(ctx context.Context, in *UpdateDataRequest, opts ...grpc.CallOption) (*UpdateDataResponse, error) {
+func (c *gophKeeperClient) UpdateDataToServer(ctx context.Context, in *UpdateDataRequest, opts ...grpc.CallOption) (*UpdateDataResponse, error) {
 	out := new(UpdateDataResponse)
-	err := c.cc.Invoke(ctx, GophKeeper_UpdateData_FullMethodName, in, out, opts...)
+	err := c.cc.Invoke(ctx, GophKeeper_UpdateDataToServer_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -98,7 +98,7 @@ type GophKeeperServer interface {
 	Login(context.Context, *AuthRequest) (*AuthResponse, error)
 	SendDataToServer(context.Context, *SendDataRequest) (*SendDataResponse, error)
 	GetDataFromServer(context.Context, *GetDataRequest) (*GetDataResponse, error)
-	UpdateData(context.Context, *UpdateDataRequest) (*UpdateDataResponse, error)
+	UpdateDataToServer(context.Context, *UpdateDataRequest) (*UpdateDataResponse, error)
 	mustEmbedUnimplementedGophKeeperServer()
 }
 
@@ -118,8 +118,8 @@ func (UnimplementedGophKeeperServer) SendDataToServer(context.Context, *SendData
 func (UnimplementedGophKeeperServer) GetDataFromServer(context.Context, *GetDataRequest) (*GetDataResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetDataFromServer not implemented")
 }
-func (UnimplementedGophKeeperServer) UpdateData(context.Context, *UpdateDataRequest) (*UpdateDataResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method UpdateData not implemented")
+func (UnimplementedGophKeeperServer) UpdateDataToServer(context.Context, *UpdateDataRequest) (*UpdateDataResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UpdateDataToServer not implemented")
 }
 func (UnimplementedGophKeeperServer) mustEmbedUnimplementedGophKeeperServer() {}
 
@@ -206,20 +206,20 @@ func _GophKeeper_GetDataFromServer_Handler(srv interface{}, ctx context.Context,
 	return interceptor(ctx, in, info, handler)
 }
 
-func _GophKeeper_UpdateData_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _GophKeeper_UpdateDataToServer_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(UpdateDataRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(GophKeeperServer).UpdateData(ctx, in)
+		return srv.(GophKeeperServer).UpdateDataToServer(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: GophKeeper_UpdateData_FullMethodName,
+		FullMethod: GophKeeper_UpdateDataToServer_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(GophKeeperServer).UpdateData(ctx, req.(*UpdateDataRequest))
+		return srv.(GophKeeperServer).UpdateDataToServer(ctx, req.(*UpdateDataRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -248,8 +248,8 @@ var GophKeeper_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _GophKeeper_GetDataFromServer_Handler,
 		},
 		{
-			MethodName: "UpdateData",
-			Handler:    _GophKeeper_UpdateData_Handler,
+			MethodName: "UpdateDataToServer",
+			Handler:    _GophKeeper_UpdateDataToServer_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

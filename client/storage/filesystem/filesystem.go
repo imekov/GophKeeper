@@ -4,15 +4,18 @@ import (
 	"bufio"
 	"encoding/gob"
 	"fmt"
-	"gophkeeper/client/storage/model"
 	"os"
+
+	"gophkeeper/client/storage/model"
 )
 
+// FS содержит имя файла и пользательские параметры вместе с данными.
 type FS struct {
-	filename string
-	Data     model.UserSession
+	filename    string
+	UserSession model.UserSession
 }
 
+// NewFSStorage возвращает новый экземпляр для работы в файловом режиме.
 func NewFSStorage(filename string) *FS {
 
 	newFS := FS{
@@ -24,7 +27,7 @@ func NewFSStorage(filename string) *FS {
 	gob.Register(model.Binary{})
 	gob.Register(model.BankCard{})
 
-	err := newFS.ReadFile(&newFS.Data)
+	err := newFS.ReadFile(&newFS.UserSession)
 	if err != nil {
 		if err = newFS.SaveFile(); err != nil {
 			fmt.Println(err)
@@ -35,6 +38,7 @@ func NewFSStorage(filename string) *FS {
 	return &newFS
 }
 
+// OpenFile открывает файл.
 func (s FS) OpenFile(flag int) *os.File {
 
 	dataFile, err := os.OpenFile(s.filename, flag|os.O_CREATE, 0777)
@@ -46,6 +50,7 @@ func (s FS) OpenFile(flag int) *os.File {
 	return dataFile
 }
 
+// ReadFile читает данные из файла.
 func (s FS) ReadFile(data *model.UserSession) error {
 
 	dataFile := s.OpenFile(os.O_RDONLY)
@@ -60,9 +65,9 @@ func (s FS) ReadFile(data *model.UserSession) error {
 
 	err := gob.NewDecoder(dataFile).Decode(data)
 	if err != nil {
-		s.Data = model.UserSession{
-			Token: "",
-			Data:  []model.UserData{},
+		s.UserSession = model.UserSession{
+			Token:     "",
+			DataArray: []model.UserData{},
 		}
 		return err
 	}
@@ -70,6 +75,7 @@ func (s FS) ReadFile(data *model.UserSession) error {
 	return nil
 }
 
+// SaveFile сохраняет данные в файл.
 func (s FS) SaveFile() error {
 
 	dataFile := s.OpenFile(os.O_WRONLY)
@@ -77,7 +83,7 @@ func (s FS) SaveFile() error {
 
 	writer := bufio.NewWriter(dataFile)
 
-	err := gob.NewEncoder(writer).Encode(&s.Data)
+	err := gob.NewEncoder(writer).Encode(&s.UserSession)
 	if err != nil {
 		fmt.Println(err)
 		return err

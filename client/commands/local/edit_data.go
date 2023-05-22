@@ -1,7 +1,8 @@
-package commands
+package local
 
 import (
 	"github.com/spf13/cobra"
+
 	"gophkeeper/client/storage/model"
 )
 

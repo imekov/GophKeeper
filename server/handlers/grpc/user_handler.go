@@ -3,10 +3,12 @@ package grpc
 import (
 	"context"
 	"errors"
-	pb "gophkeeper/proto"
 	"time"
+
+	pb "gophkeeper/proto"
 )
 
+// Register создаёт нового пользователя в базе данных.
 func (s *GophKeeperServer) Register(ctx context.Context, req *pb.AuthRequest) (*pb.AuthResponse, error) {
 	var response pb.AuthResponse
 
@@ -14,11 +16,11 @@ func (s *GophKeeperServer) Register(ctx context.Context, req *pb.AuthRequest) (*
 		return nil, errors.New("пришли пустые данные")
 	}
 
-	if s.Storage.IsUserExistByLogin(ctx, req.Login) {
+	if s.UserWriter.IsUserExistByLogin(ctx, req.Login) {
 		return nil, errors.New("данный пользователь уже зарегистрирован")
 	}
 
-	userID, err := s.Storage.CreateUser(ctx, req.Login, req.Password)
+	userID, err := s.UserWriter.CreateUser(ctx, req.Login, req.Password)
 	if err != nil {
 		return nil, err
 	}
@@ -31,6 +33,7 @@ func (s *GophKeeperServer) Register(ctx context.Context, req *pb.AuthRequest) (*
 	return &response, nil
 }
 
+// Login авторизирует пользователя.
 func (s *GophKeeperServer) Login(ctx context.Context, req *pb.AuthRequest) (*pb.AuthResponse, error) {
 	var response pb.AuthResponse
 
@@ -38,11 +41,11 @@ func (s *GophKeeperServer) Login(ctx context.Context, req *pb.AuthRequest) (*pb.
 		return nil, errors.New("пришли пустые данные")
 	}
 
-	if !s.Storage.IsUserExistByLogin(ctx, req.Login) {
+	if !s.UserWriter.IsUserExistByLogin(ctx, req.Login) {
 		return nil, errors.New("неверные логин/password")
 	}
 
-	userID, err := s.Storage.LoginUser(ctx, req.Login, req.Password)
+	userID, err := s.UserWriter.LoginUser(ctx, req.Login, req.Password)
 	if err != nil {
 		return nil, err
 	}

@@ -8,7 +8,8 @@ import (
 
 // GophKeeperServer поддерживает все необходимые методы сервера.
 type GophKeeperServer struct {
-	Storage interfaces.Repo
-	JWT     auth.JWT
+	UserWriter interfaces.UserWriter
+	DataWriter interfaces.DataWriter
+	JWT        auth.JWT
 	pb.UnimplementedGophKeeperServer
 }
