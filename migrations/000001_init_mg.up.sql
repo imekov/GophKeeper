@@ -1,0 +1,32 @@
+CREATE TABLE IF NOT EXISTS users
+(
+    user_ID INT GENERATED ALWAYS AS IDENTITY,
+    login VARCHAR(255) NOT NULL UNIQUE,
+    password VARCHAR(255) NOT NULL,
+    PRIMARY KEY(user_ID)
+);
+
+CREATE TABLE IF NOT EXISTS data_types
+(
+    type_ID INT GENERATED ALWAYS AS IDENTITY,
+    type_title VARCHAR(255) NOT NULL UNIQUE,
+    PRIMARY KEY(type_ID)
+);
+
+INSERT INTO data_types (type_title) VALUES ('LOGIN'), ('TEXT'), ('BINARY'), ('BANKCARD')
+ON CONFLICT (type_title) DO NOTHING;
+
+CREATE TABLE IF NOT EXISTS user_data
+(
+    data_id INT GENERATED ALWAYS AS IDENTITY,
+    user_ID INT,
+    type_ID INT,
+    title VARCHAR(255),
+    metadata VARCHAR(255),
+    create_date TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    is_delete BOOLEAN DEFAULT FALSE,
+    checksum VARCHAR(255) NOT NULL,
+    data BYTEA,
+    FOREIGN KEY (user_ID) REFERENCES users (user_ID),
+    FOREIGN KEY (type_ID) REFERENCES data_types (type_ID)
+);

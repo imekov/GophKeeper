@@ -1,0 +1,89 @@
+syntax = "proto3";
+package gophkeeper;
+
+option go_package = "GophKeeper/proto";
+
+message AuthRequest {
+  string login = 1;
+  string password = 2;
+}
+
+message AuthResponse {
+  string error = 1;
+  string token = 2;
+}
+
+message SendDataRequestArray{
+  string checksum = 1;
+  string data_type = 2;
+  string title = 3;
+  string metadata = 4;
+  bytes data = 5;
+  string localID = 6;
+}
+
+message SendDataRequest {
+  string token = 1;
+  repeated SendDataRequestArray data = 2;
+}
+
+message SendDataResponseArray {
+  string checksum = 1;
+  string id = 2;
+  string localID = 3;
+}
+
+message SendDataResponse {
+  repeated SendDataResponseArray resp = 1;
+}
+
+message GetDataRequest {
+  string token = 1;
+  repeated string checksum = 2;
+}
+
+message GetDataResponseArray {
+  string dataID = 1;
+  string dataType = 2;
+  string createDate = 3;
+  string title = 4;
+  string metadata = 5;
+  string checkSum = 6;
+  bytes userdata = 7;
+}
+
+message GetDataResponse {
+  repeated GetDataResponseArray data = 1;
+}
+
+message UpdateDataRequestArray{
+  string checksum = 1;
+  string title = 2;
+  string metadata = 3;
+  bytes data = 4;
+  string localID = 5;
+  string serverID = 6;
+}
+
+message UpdateDataRequest {
+  string token = 1;
+  repeated UpdateDataRequestArray data = 2;
+}
+
+message UpdateDataResponseArray {
+  string localID = 1;
+  string checkSum = 2;
+  bool ok = 3;
+}
+
+message UpdateDataResponse {
+  repeated UpdateDataResponseArray resp = 1;
+}
+
+service GophKeeper {
+  rpc Register(AuthRequest) returns (AuthResponse);
+  rpc Login(AuthRequest) returns (AuthResponse);
+  rpc SendDataToServer(SendDataRequest) returns (SendDataResponse);
+  rpc GetDataFromServer(GetDataRequest) returns (GetDataResponse);
+  rpc UpdateDataToServer(UpdateDataRequest) returns (UpdateDataResponse);
+}
